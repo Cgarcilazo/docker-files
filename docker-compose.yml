@@ -1,0 +1,32 @@
+version: "3"
+services:
+  backend:
+    container_name: backend
+    build:
+      context: ../node-app
+    depends_on:
+      - mysql
+    volumes:
+      - ../node-app:/usr/app
+      - /usr/app/node_modules
+    ports: ['3000:3000']
+    env_file: ../node-app/.env
+
+  mysql:
+    image: mysql:5.7
+    container_name: mysql
+    volumes:
+      - ../node-app/data/db:/var/lib/mysql
+    restart: always
+    ports:
+      - "3306:3306"
+
+  frontend:
+    container_name: frontend
+    build:
+      context: ../front-app
+    volumes:
+      - ../front-app:/app
+      - /app/node_modules
+    ports:
+      - '8080:8080'
